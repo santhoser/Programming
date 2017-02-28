@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RomansTranslator", "RomansT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChequeWriter", "ChequeWriter\ChequeWriter.csproj", "{FBC2A93E-E90B-487A-B930-E5FE414D28EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GemStones", "GemStones\GemStones.csproj", "{73303D48-7E03-4999-8372-1785F450E55F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{FBC2A93E-E90B-487A-B930-E5FE414D28EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBC2A93E-E90B-487A-B930-E5FE414D28EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBC2A93E-E90B-487A-B930-E5FE414D28EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73303D48-7E03-4999-8372-1785F450E55F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73303D48-7E03-4999-8372-1785F450E55F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73303D48-7E03-4999-8372-1785F450E55F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73303D48-7E03-4999-8372-1785F450E55F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

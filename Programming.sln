@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kangaroo", "Kangaroo\Kangaroo.csproj", "{D1CF4416-E681-43C2-B8E1-3D6877EF38AE}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClockAngle", "ClockAngle\ClockAngle.csproj", "{D876C9DB-15F3-46C1-8031-1EC9546F9029}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency", "Currency\Currency.csproj", "{B852ED65-636A-4B69-85BD-F6FA98DEBD80}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChequeWriter", "ChequeWriter\ChequeWriter.csproj", "{FBC2A93E-E90B-487A-B930-E5FE414D28EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{B852ED65-636A-4B69-85BD-F6FA98DEBD80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B852ED65-636A-4B69-85BD-F6FA98DEBD80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B852ED65-636A-4B69-85BD-F6FA98DEBD80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBC2A93E-E90B-487A-B930-E5FE414D28EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBC2A93E-E90B-487A-B930-E5FE414D28EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBC2A93E-E90B-487A-B930-E5FE414D28EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBC2A93E-E90B-487A-B930-E5FE414D28EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

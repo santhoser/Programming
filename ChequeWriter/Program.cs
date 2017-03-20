@@ -1,317 +1,185 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ChequeWriter
 {
     /// <summary>
     /// Accept an amount in numbers (between 0.00 and 2 billion) and print it in english as dollars and cents. 
     /// </summary>
-    public class Program
+    class Program
     {
-
         static void Main(string[] args)
         {
-            // Declare the input and output strings
-
-            string inputMonetaryValueInNumberic = string.Empty;
-            string outputMonetaryValueInEnglish = string.Empty;
-
-
-
-            Console.WriteLine("************************************");
-            Console.WriteLine("*******Cheque Writer****************");
-            Console.WriteLine("************************************");
-            Console.WriteLine("\n\n\n");
-
-            Console.Write("Enter the monetary value : ");
-            inputMonetaryValueInNumberic = Console.ReadLine();
-            inputMonetaryValueInNumberic = inputMonetaryValueInNumberic.TrimStart('0');
-            Console.WriteLine(inputMonetaryValueInNumberic);
-            if (IsValidateMonetaryValue(inputMonetaryValueInNumberic))
+            bool repeat = true;
+            while (repeat)
             {
-                outputMonetaryValueInEnglish = ConvertToEnglish(inputMonetaryValueInNumberic);
-                Console.WriteLine(outputMonetaryValueInEnglish);
-            }
-            else
-            {
-                Console.WriteLine("Error : Invalid Input.");
-            }
+                Console.WriteLine("************************************");
+                Console.WriteLine("******* Cheque Writer***************");
+                Console.WriteLine("************************************");
+                Console.WriteLine("");
+                Console.WriteLine("***** Process upto Zillion Dollars\n\n");
+                string inputMonetaryValueInNumberic = string.Empty;
+                string centPart = string.Empty;
+                string dollarPart = string.Empty;
+                Console.Write("\nEnter the monetary value : ");
+                inputMonetaryValueInNumberic = Console.ReadLine();
+                inputMonetaryValueInNumberic = inputMonetaryValueInNumberic.TrimStart('0');
 
-            Console.ReadKey();
-
-        }
-
-        /// <summary>
-        /// Input Validation Logic
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        private static bool IsValidateMonetaryValue(string input)
-        {
-            bool isValid = true;
-            double val = 0;
-            if (!double.TryParse(input, out val))
-            {
-                isValid = false;
-            }
-            if (input.Contains('.'))
-            {
-                if (input.Substring(0, input.IndexOf('.')).Length > 10)
+                if (ValidateInput(inputMonetaryValueInNumberic))
                 {
-                    isValid = false;
-                }
-                else if (input.Substring(input.IndexOf('.')).Length > 3)
-                {
-                    isValid = false;
-                }
-            }
-            else
-            {
-                if (input.Length > 10)
-                {
-                    isValid = false;
-                }
-            }
 
-
-            Regex regex = new Regex(@"[0-9]+(\.[0-9][0-9]?)?");
-            Match match = regex.Match(input);
-            if (!match.Success)
-            {
-                isValid = false;
-            }
-
-            return (isValid);
-        }
-
-        private static string ConvertToEnglish(string monetaryValue)
-        {
-            string englishOutput = string.Empty;
-            string dollarPart = string.Empty;
-            string cents = string.Empty;
-            if (monetaryValue.Contains('.'))
-            {
-                cents = CovertCentsToEnglish(monetaryValue.Substring(monetaryValue.IndexOf(".") + 1));
-                dollarPart = monetaryValue.Substring(0, monetaryValue.IndexOf("."));
-            }
-            else
-            {
-                dollarPart = monetaryValue;
-            }
-            string dollars = ConvertDollarToEnglish(dollarPart);
-            englishOutput = string.IsNullOrWhiteSpace(dollars) ? string.Empty : dollars + " Dollars " + cents;
-
-            return englishOutput;
-        }
-
-        /// <summary>
-        /// Logic - Covert the Dollar value to English
-        /// </summary>
-        /// <param name="dollarPart"></param>
-        /// <returns></returns>
-        private static string ConvertDollarToEnglish(string dollarPart)
-        {
-
-            double dollarValue = Convert.ToDouble(dollarPart); 
-            string englishValue = string.Empty;
-            string and = string.Empty;
-            // Using Stack to store each place
-            Stack<string> english = new Stack<string>();
-
-            if (dollarValue > 0)
-            {
-                dollarPart = dollarPart.TrimStart('0');
-
-                int dollarPartLength = dollarPart.Length;
-                int place = 0;
-                for (int i = dollarPartLength - 1; i >= 0; i--)
-                {
-                    place += 1;
-                    switch (place)
+                    if (inputMonetaryValueInNumberic.Contains('.'))
                     {
-                        case 1:
-                            english.Push(OnesPlace(dollarPart[i].ToString()));
-                            break;
-                        case 2:
-                            if (Convert.ToInt32(dollarPart[i].ToString() + dollarPart[i + 1].ToString()) < 20)
-                            {
-                                english.Pop();
-                                english.Push(TensPlace(dollarPart[i].ToString() + dollarPart[i + 1].ToString()).ToString());
-
-                            }
-                            else
-                            {
-                                english.Push(TensPlace(dollarPart[i].ToString() + "0"));
-                            }
-
-                            break;
-                        case 3:
-
-                            if (Convert.ToInt32(dollarPart[i].ToString()) > 0)
-                            {
-                                and = PushAndIfRequired(english);
-                                english.Push(OnesPlace(dollarPart[i].ToString()) + " Hundred " + and);
-                            }
-                            break;
-
-                        case 4:
-                            if (Convert.ToInt32(dollarPart[i].ToString()) > 0)
-                            {
-                                and = PushAndIfRequired(english);
-                                english.Push(OnesPlace(dollarPart[i].ToString()) + " Thousand " + and);
-                            }
-                            break;
-
-                        case 5:
-                            if (Convert.ToInt32(dollarPart[i].ToString()) > 0)
-                            {
-                                bool isPoped = false;
-                                if (Convert.ToInt32(dollarPart[i].ToString() + dollarPart[i + 1].ToString()) < 20)
-                                {
-                                    if (english.Peek().ToString().Contains("Thousand"))
-                                    {
-                                        english.Pop();
-                                        isPoped = true;
-                                    }
-                                    and = PushAndIfRequired(english);
-                                    english.Push(TensPlace(dollarPart[i].ToString() + dollarPart[i + 1].ToString()) + (isPoped ? " Thousand " + and : string.Empty));
-                                }
-                                else
-                                {
-                                    and = PushAndIfRequired(english);
-                                    english.Push(TensPlace(dollarPart[i].ToString() + "0") + (isPoped ? " Thousand " + and : string.Empty));
-                                }
-                            }
-                            break;
-
-                        case 6:
-                            if (Convert.ToInt32(dollarPart[i].ToString()) > 0)
-                            {
-                                if (english.Peek().ToString().Contains("Thousand") || CheckSecondLastItemInStackContains(english, "Thousand"))
-                                {
-                                    and = PushAndIfRequired(english);
-                                    english.Push(OnesPlace(dollarPart[i].ToString()) + " Hundred " + and);
-                                }
-                                else
-                                {
-                                    and = PushAndIfRequired(english);
-                                    english.Push(OnesPlace(dollarPart[i].ToString()) + " Hundred Thousand " + and);
-                                }
-                            }
-                            break;
-                        case 7:
-                            if (Convert.ToInt32(dollarPart[i].ToString()) > 0)
-                            {
-                                english.Push(OnesPlace(dollarPart[i].ToString()) + " Million " );
-                            }
-                            break;
-                        case 8:
-                            if (Convert.ToInt32(dollarPart[i].ToString()) > 0)
-                            {
-                                bool isPoped = false;
-                                if (Convert.ToInt32(dollarPart[i].ToString() + dollarPart[i + 1].ToString()) < 20)
-                                {
-                                    if (english.Peek().ToString().Contains("Million"))
-                                    {
-                                        english.Pop();
-                                        isPoped = true;
-                                    }
-                                    english.Push(TensPlace(dollarPart[i].ToString() + dollarPart[i + 1].ToString()) + (isPoped ? " Million " : string.Empty));
-
-                                }
-                                else
-                                {
-                                    english.Push(TensPlace(dollarPart[i].ToString() + "0") + (isPoped ? " Million " : string.Empty));
-                                }
-                            }
-                            break;
-
-                        case 9:
-                            if (Convert.ToInt32(dollarPart[i].ToString()) > 0)
-                            {
-                                if (english.Peek().ToString().Contains("Million") || CheckSecondLastItemInStackContains(english, "Million"))
-                                {
-                                    english.Push(OnesPlace(dollarPart[i].ToString()) + " Hundred ");
-                                }
-                                else
-                                {
-                                    english.Push(OnesPlace(dollarPart[i].ToString()) + " Hundred Million ");
-                                }
-                            }
-
-                            break;
-                        case 10:
-                            if (Convert.ToInt32(dollarPart[i].ToString()) > 0)
-                            {
-                                english.Push(OnesPlace(dollarPart[i].ToString()) + " Billion ");
-                            }
-                            break;
-                        default:
-                            break;
+                        centPart = ProcessCents(inputMonetaryValueInNumberic.Substring(inputMonetaryValueInNumberic.IndexOf(".") + 1));
+                        dollarPart = ProcessDollar(inputMonetaryValueInNumberic.Substring(0, inputMonetaryValueInNumberic.IndexOf(".")));
                     }
-                    
-                }
-                while (english.Count > 0)
-                {
-                    englishValue += english.Pop().ToString();
-                }
-            }
-            return englishValue;
-        }
-
-        /// <summary>
-        /// Check for second top item in a Stack
-        /// </summary>
-        /// <param name="stack"></param>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        private static bool CheckSecondLastItemInStackContains(Stack<string> stack, string item)
-        {
-            string temp = stack.Pop();
-            bool returnValue = false;
-            if (stack.Count > 0 && stack.Peek().Contains(item))
-            {
-                returnValue = true;
-            }
-            stack.Push(temp);
-            return returnValue;
-        }
-
-        /// <summary>
-        /// Convert Cents to English
-        /// </summary>
-        /// <param name="decimalPart"></param>
-        /// <returns></returns>
-        private static string CovertCentsToEnglish(string decimalPart)
-        {
-            int decimalValue = Convert.ToInt32(decimalPart);
-            string cents = "";
-            if (decimalValue > 0)
-            {
-                if (decimalValue < 10)
-                {
-                    cents = OnesPlace(decimalPart);
-                }
-                else if (decimalValue < 20)
-                {
-                    cents = TensPlace(decimalPart);
+                    else
+                    {
+                        dollarPart = ProcessDollar(inputMonetaryValueInNumberic);
+                    }
+                    centPart = string.IsNullOrWhiteSpace(centPart) ? string.Empty : " and " + centPart;
+                    Console.WriteLine("\n\n" + dollarPart + centPart);
                 }
                 else
                 {
-                    cents = TensPlace(decimalPart[0].ToString() + "0") + " " + OnesPlace(decimalPart[1].ToString());
+                    Console.WriteLine("Invalid Input..");
                 }
+
+                Console.WriteLine("\n\nPress any key to continue or Escape of close : ");
+                var loop = Console.ReadKey();
+                repeat = !loop.Key.ToString().Contains("Escape");
+                Console.Clear();
             }
 
-            return string.IsNullOrWhiteSpace(cents) ? string.Empty : " AND " + cents + " CENTS";
         }
 
-        // Convert the last digit to English
-        private static string OnesPlace(string onesPlaceValue)
+        private static string ProcessCents(string cents)
+        {
+            string english = string.Empty;
+            string dig3 = Process3Digit(cents);
+            if (!string.IsNullOrWhiteSpace(dig3))
+            {
+                dig3 = dig3 + " " + GetSections(0);
+            }
+            english = dig3 + english;
+            return english;
+        }
+        private static string ProcessDollar(string dollar)
+        {
+            string english = string.Empty;
+            foreach (var item in Get3DigitList(dollar))
+            {
+                string dig3 = Process3Digit(item.Value);
+                if (!string.IsNullOrWhiteSpace(dig3))
+                {
+                    dig3 = string.Format("{0} {1}", dig3, GetSections(item.Key));
+                }
+                english = dig3 + english;
+            }
+            return english;
+        }
+        private static string Process3Digit(string digit3)
+        {
+            string result = string.Empty;
+            if (Convert.ToInt32(digit3) != 0)
+            {
+                int place = 0;
+                Stack<string> monetaryValue = new Stack<string>();
+                for (int i = digit3.Length - 1; i >= 0; i--)
+                {
+                    place += 1;
+                    string stringValue = string.Empty;
+                    switch (place)
+                    {
+                        case 1:
+                            stringValue = GetOnes(digit3[i].ToString());
+                            break;
+                        case 2:
+                            int tens = Convert.ToInt32(digit3[i]);
+                            if (tens == 1)
+                            {
+                                if (monetaryValue.Count > 0)
+                                {
+                                    monetaryValue.Pop();
+                                }
+                                stringValue = GetTens((digit3[i].ToString() + digit3[i + 1].ToString()));
+                            }
+                            else
+                            {
+                                stringValue = GetTens(digit3[i].ToString());
+                            }
+                            break;
+                        case 3:
+                            stringValue = GetOnes(digit3[i].ToString());
+                            if (!string.IsNullOrWhiteSpace(stringValue))
+                            {
+                                string postFixWith = " Hundred";
+                                if (monetaryValue.Count > 0)
+                                {
+                                    postFixWith = postFixWith + " And";
+                                }
+                                stringValue += postFixWith;
+                            }
+                            break;
+                    }
+                    if (!string.IsNullOrWhiteSpace(stringValue))
+                        monetaryValue.Push(stringValue);
+                }
+                while (monetaryValue.Count > 0)
+                {
+                    result += " " + monetaryValue.Pop().ToString().Trim();
+                }
+            }
+            return result;
+        }
+        private static Dictionary<int, string> Get3DigitList(string monetaryValueInNumberic)
+        {
+            Dictionary<int, string> hundredsStack = new Dictionary<int, string>();
+            int counter = 0;
+            while (monetaryValueInNumberic.Length >= 3)
+            {
+                string digit3 = monetaryValueInNumberic.Substring(monetaryValueInNumberic.Length - 3, 3);
+                monetaryValueInNumberic = monetaryValueInNumberic.Substring(0, monetaryValueInNumberic.Length - 3);
+                hundredsStack.Add(++counter, digit3);
+            }
+            if (monetaryValueInNumberic.Length != 0)
+                hundredsStack.Add(++counter, monetaryValueInNumberic);
+            return hundredsStack;
+        }
+        private static string GetTens(string tensPlaceValue)
+        {
+            string englishEquvalent = string.Empty;
+            int value = Convert.ToInt32(tensPlaceValue);
+            Dictionary<int, string> tens = new Dictionary<int, string>();
+            tens.Add(2, "Twenty");
+            tens.Add(3, "Thirty");
+            tens.Add(4, "Forty");
+            tens.Add(5, "Fifty");
+            tens.Add(6, "Sixty");
+            tens.Add(7, "Seventy");
+            tens.Add(8, "Eighty");
+            tens.Add(9, "Ninty");
+            tens.Add(10, "Ten");
+            tens.Add(11, "Eleven");
+            tens.Add(12, "Twelve");
+            tens.Add(13, "Thrteen");
+            tens.Add(14, "Fourteen");
+            tens.Add(15, "Fifteen");
+            tens.Add(16, "Sixteen");
+            tens.Add(17, "Seventeen");
+            tens.Add(18, "Eighteen");
+            tens.Add(19, "Ninteen");
+            if (tens.ContainsKey(value))
+            {
+                englishEquvalent = tens[value];
+            }
+
+            return englishEquvalent;
+
+        }
+        private static string GetOnes(string onesPlaceValue)
         {
             int value = Convert.ToInt32(onesPlaceValue);
             string englishEquvalent = string.Empty;
@@ -332,46 +200,44 @@ namespace ChequeWriter
             }
 
             return englishEquvalent;
-
         }
-
-        // Convert the tenth place to English
-        private static string TensPlace(string tensPlaceValue)
+        private static string GetSections(int section)
         {
-            string englishEquvalent = string.Empty;
-            int value = Convert.ToInt32(tensPlaceValue);
-            Dictionary<int, string> tens = new Dictionary<int, string>();
-            tens.Add(10, "Ten");
-            tens.Add(20, "Twenty");
-            tens.Add(30, "Thirty");
-            tens.Add(40, "Forty");
-            tens.Add(50, "Fifty");
-            tens.Add(60, "Sixty");
-            tens.Add(70, "Seventy");
-            tens.Add(80, "Eighty");
-            tens.Add(90, "Ninty");
-            tens.Add(11, "Eleven");
-            tens.Add(12, "Twelve");
-            tens.Add(13, "Thrteen");
-            tens.Add(14, "Fourteen");
-            tens.Add(15, "Fifteen");
-            tens.Add(16, "Sixteen");
-            tens.Add(17, "Seventeen");
-            tens.Add(18, "Eighteen");
-            tens.Add(19, "Ninteen");
-            if (tens.ContainsKey(value))
+            string sectionName = string.Empty;
+            switch (section)
             {
-                englishEquvalent = tens[value];
+                case 0:
+                    sectionName = "Cents";
+                    break;
+                case 1:
+                    sectionName = "Dollars";
+                    break;
+                case 2:
+                    sectionName = "Thousand";
+                    break;
+                case 3:
+                    sectionName = "Million";
+                    break;
+                case 4:
+                    sectionName = "Billion";
+                    break;
+                case 5:
+                    sectionName = "Trillion";
+                    break;
+                case 6:
+                    sectionName = "Zillion";
+                    break;
             }
-
-            return englishEquvalent;
-
+            return sectionName;
         }
-        private static string PushAndIfRequired(Stack<string> stack)
+        private static bool ValidateInput(string input)
         {
-            return (stack.Count > 0) ? " AND " : string.Empty;
+            bool result = false;
+            if (Regex.IsMatch(input, "[0-9]{1,9}(\\.[0-9]{1,2})?"))
+            {
+                result = true;
+            }
+            return result;
         }
     }
-
-
 }
